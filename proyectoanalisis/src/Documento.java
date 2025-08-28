@@ -1,22 +1,24 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Documento {
-    private String nombre;
-    private String contenido;
-    private Map<String, Integer> frecuenciaPalabras;
+    private final String nombre;
+    private final String contenido;
+    private final Map<String, Integer> frecuenciaPalabras = new HashMap<>();
 
     public Documento(String nombre, String contenido) {
         this.nombre = nombre;
         this.contenido = contenido;
-        this.frecuenciaPalabras = new HashMap<>();
         procesarContenido();
     }
 
     private void procesarContenido() {
-        String[] palabras = contenido.toLowerCase().split("\\W+");
-        for (String palabra : palabras) {
-            if (!palabra.isEmpty()) {
-                frecuenciaPalabras.put(palabra, frecuenciaPalabras.getOrDefault(palabra, 0) + 1);
+        // \\P{L}+ separa por todo lo que NO es letra (soporta tildes)
+        String[] tokens = contenido.toLowerCase().split("\\P{L}+");
+        for (String t : tokens) {
+            if (!t.isEmpty()) {
+                Integer c = frecuenciaPalabras.get(t);
+                frecuenciaPalabras.put(t, (c == null) ? 1 : c + 1);
             }
         }
     }
@@ -33,3 +35,4 @@ public class Documento {
         return frecuenciaPalabras;
     }
 }
+
