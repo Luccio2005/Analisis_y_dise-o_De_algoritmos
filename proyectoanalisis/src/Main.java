@@ -12,6 +12,7 @@ public class Main {
             System.out.println("3. Ver contenido de un documento");
             System.out.println("4. Cargar documentos .txt desde carpeta");
             System.out.println("5. Salir");
+            System.out.println("6. Mostrar métricas de documentos");
             System.out.print("Elige una opción: ");
 
             String input = sc.nextLine().trim();
@@ -68,6 +69,9 @@ public class Main {
                     System.out.println("Saliendo del sistema...");
                     sc.close();
                     return;
+                case 6:
+                    indice.mostrarMetricas();
+                    break;
 
                 default:
                     System.out.println("Opción no válida.");

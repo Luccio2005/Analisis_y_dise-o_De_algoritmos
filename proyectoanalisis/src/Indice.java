@@ -59,6 +59,16 @@ public class Indice {
             System.out.println("No se encontraron archivos .txt en: " + rutaCarpeta);
         }
     }
+    public void mostrarMetricas() {
+        System.out.println("\n=== Métricas de Documentos ===");
+        if (documentos.isEmpty()) {
+            System.out.println("(sin documentos)");
+        } else {
+            for (Documento doc : documentos) {
+                System.out.println(doc.toString());
+            }
+        }
+    }
 }
 
 
