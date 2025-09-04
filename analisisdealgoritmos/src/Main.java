@@ -20,8 +20,10 @@ public class Main {
             System.out.println("4. Ordenar con Merge Sort (O(n log n))");
             System.out.println("5. Ordenar con Merge Natural (O(n log n) aprox.)");
             System.out.println("6. Ordenar con Mezcla Equilibrada Múltiple (O(n log n))");
-            System.out.println("7. Cambiar datos");
-            System.out.println("8. Salir");
+            System.out.println("7. Ordenar con Método Polifásico (O(n log n))");
+            System.out.println("8. Cambiar datos");
+            System.out.println("9. Salir");
+
 
             int opcion;
             try {
@@ -31,9 +33,9 @@ public class Main {
                 continue;
             }
 
-            if (opcion == 8) break;
+            if (opcion == 9) break;
 
-            if (opcion == 7) {
+            if (opcion == 8) {
                 System.out.println("Ingresa enteros separados por espacio (ej: 5 3 8 1 2):");
                 String linea = sc.nextLine();
                 try {
@@ -45,7 +47,7 @@ public class Main {
                 continue;
             }
 
-            if (opcion < 1 || opcion > 6) {
+            if (opcion < 1 || opcion > 7) {
                 System.out.println("Opción inválida.");
                 continue;
             }
@@ -73,6 +75,9 @@ public class Main {
                     break;
                 case 6:
                     mergeSortEquilibradaMultiple(arreglo, 3); // ejemplo con 3 archivos auxiliares
+                    break;
+                case 7:
+                    mergeSortPolifasico(arreglo);
                     break;
                 default:
                     // ya validado arriba
@@ -253,6 +258,85 @@ public class Main {
             arr[i] = ordenado.get(i);
         }
     }
+    // 7) Método Polifásico de Ordenación Externa (simulado en memoria)
+    public static void mergeSortPolifasico(int[] arr) {
+        if (arr.length <= 1) return;
+
+        // 1. Detectar runs naturales
+        List<List<Integer>> runs = detectarRuns(arr);
+
+        // 2. Distribuir runs usando serie de Fibonacci
+        List<List<Integer>> A = new ArrayList<>();
+        List<List<Integer>> B = new ArrayList<>();
+        List<List<Integer>> C = new ArrayList<>();
+
+        distribuirFibonacci(runs, A, B);
+
+        // 3. Proceso de mezcla polifásica
+        while (A.size() + B.size() + C.size() > 1) {
+            if (A.isEmpty()) {
+                // rotar roles: B->A, C->B, A->C
+                List<List<Integer>> tmp = A;
+                A = B;
+                B = C;
+                C = tmp;
+            } else if (B.isEmpty()) {
+                // rotar roles: A->B, C->A, B->C
+                List<List<Integer>> tmp = B;
+                B = A;
+                A = C;
+                C = tmp;
+            }
+
+            // fusionar el primer run de A y de B
+            if (!A.isEmpty() && !B.isEmpty()) {
+                List<Integer> runA = A.remove(0);
+                List<Integer> runB = B.remove(0);
+                List<Integer> fusion = fusionarListas(runA, runB);
+                C.add(fusion);
+            }
+        }
+
+        // 4. Copiar resultado final
+        List<Integer> ordenado;
+        if (!A.isEmpty()) ordenado = A.get(0);
+        else if (!B.isEmpty()) ordenado = B.get(0);
+        else ordenado = C.get(0);
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = ordenado.get(i);
+        }
+    }
+
+    // Distribuye los runs entre dos archivos según serie de Fibonacci
+    private static void distribuirFibonacci(List<List<Integer>> runs,
+                                            List<List<Integer>> A,
+                                            List<List<Integer>> B) {
+        // Calcular números de Fibonacci hasta cubrir la cantidad de runs
+        List<Integer> fibs = new ArrayList<>();
+        fibs.add(1);
+        fibs.add(1);
+        while (fibs.get(fibs.size() - 1) < runs.size()) {
+            int n = fibs.get(fibs.size() - 1) + fibs.get(fibs.size() - 2);
+            fibs.add(n);
+        }
+
+        // Tomar el último valor válido
+        int total = fibs.get(fibs.size() - 1);
+
+        // Distribuir runs: A recibe F(k-1), B recibe F(k-2)
+        int cantidadA = fibs.get(fibs.size() - 2);
+        int cantidadB = total - cantidadA;
+
+        int index = 0;
+        for (int i = 0; i < cantidadA && index < runs.size(); i++) {
+            A.add(runs.get(index++));
+        }
+        for (int i = 0; i < cantidadB && index < runs.size(); i++) {
+            B.add(runs.get(index++));
+        }
+    }
+
 
     // Detecta runs crecientes en el arreglo
     private static List<List<Integer>> detectarRuns(int[] arr) {
