@@ -19,9 +19,9 @@ public class Main {
             System.out.println("3. Ordenar con Inserción (O(n^2))");
             System.out.println("4. Ordenar con Merge Sort (O(n log n))");
             System.out.println("5. Ordenar con Merge Natural (O(n log n) aprox.)");
-            System.out.println("6. Cambiar datos");
-            System.out.println("7. Salir");
-            System.out.print("Opción: ");
+            System.out.println("6. Ordenar con Mezcla Equilibrada Múltiple (O(n log n))");
+            System.out.println("7. Cambiar datos");
+            System.out.println("8. Salir");
 
             int opcion;
             try {
@@ -31,9 +31,9 @@ public class Main {
                 continue;
             }
 
-            if (opcion == 7) break;
+            if (opcion == 8) break;
 
-            if (opcion == 6) {
+            if (opcion == 7) {
                 System.out.println("Ingresa enteros separados por espacio (ej: 5 3 8 1 2):");
                 String linea = sc.nextLine();
                 try {
@@ -45,7 +45,7 @@ public class Main {
                 continue;
             }
 
-            if (opcion < 1 || opcion > 5) {
+            if (opcion < 1 || opcion > 6) {
                 System.out.println("Opción inválida.");
                 continue;
             }
@@ -70,6 +70,9 @@ public class Main {
                     break;
                 case 5:
                     mergeSortNatural(arreglo);
+                    break;
+                case 6:
+                    mergeSortEquilibradaMultiple(arreglo, 3); // ejemplo con 3 archivos auxiliares
                     break;
                 default:
                     // ya validado arriba
@@ -221,6 +224,80 @@ public class Main {
             }
         }
     }
+    // 6) Mezcla Equilibrada Múltiple — Simulada en memoria
+    public static void mergeSortEquilibradaMultiple(int[] arr, int m) {
+        if (arr.length <= 1) return;
+
+        List<List<Integer>> runs = detectarRuns(arr);
+
+        // Mientras haya más de una run, seguimos mezclando
+        while (runs.size() > 1) {
+            List<List<Integer>> nuevasRuns = new ArrayList<>();
+
+            for (int i = 0; i < runs.size(); i += (m - 1)) {
+                List<Integer> mezcla = new ArrayList<>(runs.get(i));
+
+                // fusionar hasta m-1 runs
+                for (int j = 1; j < m - 1 && (i + j) < runs.size(); j++) {
+                    mezcla = fusionarListas(mezcla, runs.get(i + j));
+                }
+                nuevasRuns.add(mezcla);
+            }
+
+            runs = nuevasRuns; // siguiente pasada
+        }
+
+        // copiar resultado al arreglo original
+        List<Integer> ordenado = runs.get(0);
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = ordenado.get(i);
+        }
+    }
+
+    // Detecta runs crecientes en el arreglo
+    private static List<List<Integer>> detectarRuns(int[] arr) {
+        List<List<Integer>> runs = new ArrayList<>();
+        List<Integer> actual = new ArrayList<>();
+        actual.add(arr[0]);
+
+        for (int i = 1; i < arr.length; i++) {
+            comparaciones++;
+            if (arr[i] >= arr[i - 1]) {
+                actual.add(arr[i]);
+            } else {
+                runs.add(actual);
+                actual = new ArrayList<>();
+                actual.add(arr[i]);
+            }
+        }
+        runs.add(actual);
+        return runs;
+    }
+
+    // Fusiona dos listas ordenadas
+    private static List<Integer> fusionarListas(List<Integer> a, List<Integer> b) {
+        List<Integer> res = new ArrayList<>();
+        int i = 0, j = 0;
+        while (i < a.size() && j < b.size()) {
+            comparaciones++;
+            if (a.get(i) <= b.get(j)) {
+                res.add(a.get(i++));
+            } else {
+                res.add(b.get(j++));
+            }
+            intercambios++;
+        }
+        while (i < a.size()) {
+            res.add(a.get(i++));
+            intercambios++;
+        }
+        while (j < b.size()) {
+            res.add(b.get(j++));
+            intercambios++;
+        }
+        return res;
+    }
+
 
     private static void mergeNatural(int[] arr, int[] aux, int inicio, int medio, int fin) {
         int i = inicio, j = medio + 1, k = inicio;
