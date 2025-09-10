@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // Datos de ejemplo (puedes cambiarlos con la opción 6)
+        // Datos de ejemplo (puedes cambiarlos con la opción 8)
         int[] datos = {34, 12, 5, 66, 1, 99, 23, 7};
 
         while (true) {
@@ -24,7 +24,6 @@ public class Main {
             System.out.println("8. Cambiar datos");
             System.out.println("9. Salir");
 
-
             int opcion;
             try {
                 opcion = Integer.parseInt(sc.nextLine().trim());
@@ -38,6 +37,10 @@ public class Main {
             if (opcion == 8) {
                 System.out.println("Ingresa enteros separados por espacio (ej: 5 3 8 1 2):");
                 String linea = sc.nextLine();
+                if (linea.trim().isEmpty()) {
+                    System.out.println("No ingresaste datos, mantengo los anteriores.");
+                    continue;
+                }
                 try {
                     datos = parsearEnteros(linea);
                     System.out.println("Datos cargados: " + Arrays.toString(datos));
@@ -52,43 +55,42 @@ public class Main {
                 continue;
             }
 
+            // Mostrar datos originales
+            System.out.println("Datos originales: " + Arrays.toString(datos));
+
             int[] arreglo = Arrays.copyOf(datos, datos.length); // trabajar con copia
             comparaciones = 0;
             intercambios = 0;
 
+            // Mostrar algoritmo elegido
+            System.out.println("\nEjecutando: " +
+                    (opcion == 1 ? "Burbuja" :
+                            opcion == 2 ? "Selección" :
+                                    opcion == 3 ? "Inserción" :
+                                            opcion == 4 ? "Merge Sort" :
+                                                    opcion == 5 ? "Merge Natural" :
+                                                            opcion == 6 ? "Mezcla Equilibrada Múltiple" :
+                                                                    "Polifásico"));
+
             long inicio = System.nanoTime();
             switch (opcion) {
-                case 1:
-                    burbuja(arreglo);
-                    break;
-                case 2:
-                    seleccion(arreglo);
-                    break;
-                case 3:
-                    insercion(arreglo);
-                    break;
-                case 4:
-                    mergeSort(arreglo, 0, arreglo.length - 1);
-                    break;
-                case 5:
-                    mergeSortNatural(arreglo);
-                    break;
-                case 6:
-                    mergeSortEquilibradaMultiple(arreglo, 3); // ejemplo con 3 archivos auxiliares
-                    break;
-                case 7:
-                    mergeSortPolifasico(arreglo);
-                    break;
-                default:
-                    // ya validado arriba
-                    break;
+                case 1: burbuja(arreglo); break;
+                case 2: seleccion(arreglo); break;
+                case 3: insercion(arreglo); break;
+                case 4: mergeSort(arreglo, 0, arreglo.length - 1); break;
+                case 5: mergeSortNatural(arreglo); break;
+                case 6: mergeSortEquilibradaMultiple(arreglo, 3); break;
+                case 7: mergeSortPolifasico(arreglo); break;
             }
             long fin = System.nanoTime();
 
+            // Resultados
+            System.out.println("=================================");
             System.out.println("Arreglo ordenado: " + Arrays.toString(arreglo));
             System.out.println("Comparaciones: " + comparaciones);
             System.out.println("Intercambios / Movimientos: " + intercambios);
-            System.out.println("Tiempo de ejecución: " + ((fin - inicio) / 1e6) + " ms");
+            System.out.printf("Tiempo de ejecución: %.3f ms\n", (fin - inicio) / 1e6);
+            System.out.println("=================================");
         }
 
         sc.close();
@@ -187,7 +189,7 @@ public class Main {
             } else {
                 arr[k++] = R[j++];
             }
-            intercambios++; // contamos la asignación al arreglo final como movimiento
+            intercambios++;
         }
         while (i < n1) {
             arr[k++] = L[i++];
@@ -199,146 +201,113 @@ public class Main {
         }
     }
 
-    // 5) Merge Natural — Detecta runs naturales y los fusiona
+    // 5) Merge Natural
     public static void mergeSortNatural(int[] arr) {
         boolean ordenado = false;
         int[] aux = new int[arr.length];
 
         while (!ordenado) {
             int inicio = 0;
-            ordenado = true; // si no hacemos ninguna fusión, ya está ordenado
+            ordenado = true;
 
             while (inicio < arr.length - 1) {
                 int medio = inicio;
-                // primera run creciente
-                while (medio + 1 < arr.length && arr[medio] <= arr[medio + 1]) {
-                    medio++;
-                }
-                if (medio == arr.length - 1) break; // no hay segunda run
+                while (medio + 1 < arr.length && arr[medio] <= arr[medio + 1]) medio++;
+                if (medio == arr.length - 1) break;
 
                 int fin = medio + 1;
-                // segunda run creciente
-                while (fin + 1 < arr.length && arr[fin] <= arr[fin + 1]) {
-                    fin++;
-                }
+                while (fin + 1 < arr.length && arr[fin] <= arr[fin + 1]) fin++;
 
-                // fusionar [inicio..medio] y [medio+1..fin] en aux y devolver a arr
                 mergeNatural(arr, aux, inicio, medio, fin);
                 ordenado = false;
                 inicio = fin + 1;
             }
         }
     }
-    // 6) Mezcla Equilibrada Múltiple — Simulada en memoria
+
+    // 6) Mezcla Equilibrada Múltiple — Simulada
     public static void mergeSortEquilibradaMultiple(int[] arr, int m) {
         if (arr.length <= 1) return;
 
         List<List<Integer>> runs = detectarRuns(arr);
+        System.out.println("Runs detectados: " + runs);
 
-        // Mientras haya más de una run, seguimos mezclando
         while (runs.size() > 1) {
             List<List<Integer>> nuevasRuns = new ArrayList<>();
 
             for (int i = 0; i < runs.size(); i += (m - 1)) {
                 List<Integer> mezcla = new ArrayList<>(runs.get(i));
-
-                // fusionar hasta m-1 runs
                 for (int j = 1; j < m - 1 && (i + j) < runs.size(); j++) {
                     mezcla = fusionarListas(mezcla, runs.get(i + j));
                 }
                 nuevasRuns.add(mezcla);
             }
-
-            runs = nuevasRuns; // siguiente pasada
+            runs = nuevasRuns;
         }
 
-        // copiar resultado al arreglo original
         List<Integer> ordenado = runs.get(0);
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = ordenado.get(i);
-        }
+        for (int i = 0; i < arr.length; i++) arr[i] = ordenado.get(i);
     }
-    // 7) Método Polifásico de Ordenación Externa (simulado en memoria)
+
+    // 7) Polifásico — Simulado
     public static void mergeSortPolifasico(int[] arr) {
         if (arr.length <= 1) return;
 
-        // 1. Detectar runs naturales
         List<List<Integer>> runs = detectarRuns(arr);
+        System.out.println("Runs detectados: " + runs);
 
-        // 2. Distribuir runs usando serie de Fibonacci
         List<List<Integer>> A = new ArrayList<>();
         List<List<Integer>> B = new ArrayList<>();
         List<List<Integer>> C = new ArrayList<>();
 
         distribuirFibonacci(runs, A, B);
 
-        // 3. Proceso de mezcla polifásica
         while (A.size() + B.size() + C.size() > 1) {
             if (A.isEmpty()) {
-                // rotar roles: B->A, C->B, A->C
                 List<List<Integer>> tmp = A;
-                A = B;
-                B = C;
-                C = tmp;
+                A = B; B = C; C = tmp;
             } else if (B.isEmpty()) {
-                // rotar roles: A->B, C->A, B->C
                 List<List<Integer>> tmp = B;
-                B = A;
-                A = C;
-                C = tmp;
+                B = A; A = C; C = tmp;
             }
 
-            // fusionar el primer run de A y de B
             if (!A.isEmpty() && !B.isEmpty()) {
                 List<Integer> runA = A.remove(0);
                 List<Integer> runB = B.remove(0);
-                List<Integer> fusion = fusionarListas(runA, runB);
-                C.add(fusion);
+                C.add(fusionarListas(runA, runB));
             }
         }
 
-        // 4. Copiar resultado final
         List<Integer> ordenado;
         if (!A.isEmpty()) ordenado = A.get(0);
         else if (!B.isEmpty()) ordenado = B.get(0);
         else ordenado = C.get(0);
 
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = ordenado.get(i);
-        }
+        for (int i = 0; i < arr.length; i++) arr[i] = ordenado.get(i);
     }
 
-    // Distribuye los runs entre dos archivos según serie de Fibonacci
+    // Distribución Fibonacci
     private static void distribuirFibonacci(List<List<Integer>> runs,
                                             List<List<Integer>> A,
                                             List<List<Integer>> B) {
-        // Calcular números de Fibonacci hasta cubrir la cantidad de runs
         List<Integer> fibs = new ArrayList<>();
-        fibs.add(1);
-        fibs.add(1);
+        fibs.add(1); fibs.add(1);
         while (fibs.get(fibs.size() - 1) < runs.size()) {
-            int n = fibs.get(fibs.size() - 1) + fibs.get(fibs.size() - 2);
-            fibs.add(n);
+            fibs.add(fibs.get(fibs.size() - 1) + fibs.get(fibs.size() - 2));
         }
 
-        // Tomar el último valor válido
         int total = fibs.get(fibs.size() - 1);
-
-        // Distribuir runs: A recibe F(k-1), B recibe F(k-2)
         int cantidadA = fibs.get(fibs.size() - 2);
         int cantidadB = total - cantidadA;
 
         int index = 0;
-        for (int i = 0; i < cantidadA && index < runs.size(); i++) {
+        for (int i = 0; i < cantidadA && index < runs.size(); i++)
             A.add(runs.get(index++));
-        }
-        for (int i = 0; i < cantidadB && index < runs.size(); i++) {
+        for (int i = 0; i < cantidadB && index < runs.size(); i++)
             B.add(runs.get(index++));
-        }
     }
 
-
-    // Detecta runs crecientes en el arreglo
+    // Detecta runs
     private static List<List<Integer>> detectarRuns(int[] arr) {
         List<List<Integer>> runs = new ArrayList<>();
         List<Integer> actual = new ArrayList<>();
@@ -346,9 +315,8 @@ public class Main {
 
         for (int i = 1; i < arr.length; i++) {
             comparaciones++;
-            if (arr[i] >= arr[i - 1]) {
-                actual.add(arr[i]);
-            } else {
+            if (arr[i] >= arr[i - 1]) actual.add(arr[i]);
+            else {
                 runs.add(actual);
                 actual = new ArrayList<>();
                 actual.add(arr[i]);
@@ -358,49 +326,36 @@ public class Main {
         return runs;
     }
 
-    // Fusiona dos listas ordenadas
+    // Fusiona listas
     private static List<Integer> fusionarListas(List<Integer> a, List<Integer> b) {
         List<Integer> res = new ArrayList<>();
         int i = 0, j = 0;
         while (i < a.size() && j < b.size()) {
             comparaciones++;
-            if (a.get(i) <= b.get(j)) {
-                res.add(a.get(i++));
-            } else {
-                res.add(b.get(j++));
-            }
+            if (a.get(i) <= b.get(j)) res.add(a.get(i++));
+            else res.add(b.get(j++));
             intercambios++;
         }
-        while (i < a.size()) {
-            res.add(a.get(i++));
-            intercambios++;
-        }
-        while (j < b.size()) {
-            res.add(b.get(j++));
-            intercambios++;
-        }
+        while (i < a.size()) { res.add(a.get(i++)); intercambios++; }
+        while (j < b.size()) { res.add(b.get(j++)); intercambios++; }
         return res;
     }
 
-
     private static void mergeNatural(int[] arr, int[] aux, int inicio, int medio, int fin) {
         int i = inicio, j = medio + 1, k = inicio;
-
         while (i <= medio && j <= fin) {
             comparaciones++;
-            if (arr[i] <= arr[j]) {
-                aux[k++] = arr[i++];
-            } else {
-                aux[k++] = arr[j++];
-            }
+            if (arr[i] <= arr[j]) aux[k++] = arr[i++];
+            else aux[k++] = arr[j++];
         }
         while (i <= medio) aux[k++] = arr[i++];
         while (j <= fin) aux[k++] = arr[j++];
 
         for (i = inicio; i <= fin; i++) {
             arr[i] = aux[i];
-            intercambios++; // contamos la escritura final en arr como movimiento
+            intercambios++;
         }
     }
 }
+
 
