@@ -8,6 +8,15 @@ public class TablaHash {
         this.tabla = new Libro[capacidad];
     }
 
+    private int funcionHash(int id){
+        return id % capacidad;
+    }
+
+    public void insertar(Libro libro){
+        int indice = funcionHash(libro.getId());
+        tabla[indice]= libro;
+    }
+
     // Método para mostrar el contenido de la tabla (solo para pruebas iniciales)
     public void mostrarTabla() {
         for (int i = 0; i < capacidad; i++) {
