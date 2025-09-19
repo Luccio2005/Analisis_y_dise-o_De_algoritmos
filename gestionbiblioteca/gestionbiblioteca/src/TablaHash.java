@@ -14,7 +14,13 @@ public class TablaHash {
 
     public void insertar(Libro libro){
         int indice = funcionHash(libro.getId());
-        tabla[indice]= libro;
+        tabla[indice] = libro;
+    }
+
+    // ---- Día 5: Buscar libro por id ----
+    public Libro buscarPorId(int id) {
+        int indice = funcionHash(id);
+        return tabla[indice];  // puede devolver null si no hay nada
     }
 
     // Método para mostrar el contenido de la tabla (solo para pruebas iniciales)
