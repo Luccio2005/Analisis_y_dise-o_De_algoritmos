@@ -12,18 +12,40 @@ public class TablaHash {
         return id % capacidad;
     }
 
+    // ---- Día 6: Inserción con exploración lineal ----
     public void insertar(Libro libro){
         int indice = funcionHash(libro.getId());
-        tabla[indice] = libro;
+
+        // Mientras haya colisión, avanza a la siguiente posición
+        int intentos = 0;
+        while (tabla[indice] != null && intentos < capacidad) {
+            indice = (indice + 1) % capacidad; // avanzar circularmente
+            intentos++;
+        }
+
+        if (intentos == capacidad) {
+            System.out.println("Error: la tabla está llena, no se pudo insertar " + libro);
+        } else {
+            tabla[indice] = libro;
+        }
     }
 
-    // ---- Día 5: Buscar libro por id ----
+    // ---- Día 6: Búsqueda con exploración lineal ----
     public Libro buscarPorId(int id) {
         int indice = funcionHash(id);
-        return tabla[indice];  // puede devolver null si no hay nada
+        int intentos = 0;
+
+        while (tabla[indice] != null && intentos < capacidad) {
+            if (tabla[indice].getId() == id) {
+                return tabla[indice]; // encontrado
+            }
+            indice = (indice + 1) % capacidad;
+            intentos++;
+        }
+        return null; // no encontrado
     }
 
-    // Método para mostrar el contenido de la tabla (solo para pruebas iniciales)
+    // Método para mostrar el contenido de la tabla
     public void mostrarTabla() {
         for (int i = 0; i < capacidad; i++) {
             if (tabla[i] != null) {
@@ -34,3 +56,4 @@ public class TablaHash {
         }
     }
 }
+
