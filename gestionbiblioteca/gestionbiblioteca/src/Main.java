@@ -1,41 +1,28 @@
 public class Main {
     public static void main(String[] args) {
-        int capacidad = 23; // capacidad mayor para manejar colisiones
-        TablaHash tabla = new TablaHash(capacidad);
+        TablaHash tabla = new TablaHash(11); // capacidad pequeña para forzar colisiones
 
-        // ---- Crear 20 libros ----
-        Libro[] libros = new Libro[20];
-        for (int i = 0; i < 20; i++) {
-            libros[i] = new Libro(i + 1, "Libro " + (i + 1), "Autor " + (i + 1));
-        }
+        // Estos 3 colisionan en la misma posición inicial (id % 11 = 1)
+        Libro libro1 = new Libro(1, "El Quijote", "Cervantes");
+        Libro libro2 = new Libro(12, "Cien años de soledad", "García Márquez");
+        Libro libro3 = new Libro(23, "La Odisea", "Homero");
 
-        // ---- Medir tiempo de inserción ----
-        long inicioInsercion = System.nanoTime();
-        for (Libro libro : libros) {
-            tabla.insertar(libro);
-        }
-        long finInsercion = System.nanoTime();
+        tabla.insertar(libro1);
+        tabla.insertar(libro2);
+        tabla.insertar(libro3);
 
-        System.out.println("Tiempo total de inserción de 20 libros: " + (finInsercion - inicioInsercion) + " ns");
+        // Mostrar estado
+        System.out.println("Estado de la tabla hash (exploración cuadrática):");
+        tabla.mostrarTabla();
 
-        // Mostrar parte de la tabla
-        System.out.println("\nEstado de la tabla hash (primeras 10 posiciones):");
-        for (int i = 0; i < 10; i++) {
-            tabla.mostrarPosicion(i);
-        }
+        // Búsquedas
+        System.out.println("\nBuscando libro con id=23...");
+        Libro encontrado = tabla.buscarPorId(23);
+        System.out.println(encontrado != null ? "Encontrado: " + encontrado : "No encontrado");
 
-        // ---- Medir tiempo de búsqueda ----
-        int idBuscado = 15;
-        long inicioBusqueda = System.nanoTime();
-        Libro encontrado = tabla.buscarPorId(idBuscado);
-        long finBusqueda = System.nanoTime();
-
-        if (encontrado != null) {
-            System.out.println("\nLibro con id=" + idBuscado + " encontrado: " + encontrado);
-        } else {
-            System.out.println("\nLibro con id=" + idBuscado + " no encontrado.");
-        }
-
-        System.out.println("Tiempo de búsqueda: " + (finBusqueda - inicioBusqueda) + " ns");
+        System.out.println("\nBuscando libro con id=99...");
+        Libro noExiste = tabla.buscarPorId(99);
+        System.out.println(noExiste != null ? "Encontrado: " + noExiste : "No encontrado");
     }
 }
+
