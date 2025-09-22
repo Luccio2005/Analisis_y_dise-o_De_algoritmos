@@ -1,49 +1,41 @@
 public class Main {
     public static void main(String[] args) {
-        // Creamos una tabla hash con 5 posiciones
-        TablaHash tabla = new TablaHash(5);
+        int capacidad = 23; // capacidad mayor para manejar colisiones
+        TablaHash tabla = new TablaHash(capacidad);
 
-        // ---- Libros con colisiones ----
-        // 1 % 5 = 1
-        // 6 % 5 = 1 -> colisiona con el 1
-        // 11 % 5 = 1 -> vuelve a colisionar
-        Libro libro1 = new Libro(1, "El Quijote", "Cervantes");
-        Libro libro2 = new Libro(6, "Cien años de soledad", "García Márquez");
-        Libro libro3 = new Libro(11, "La Odisea", "Homero");
+        // ---- Crear 20 libros ----
+        Libro[] libros = new Libro[20];
+        for (int i = 0; i < 20; i++) {
+            libros[i] = new Libro(i + 1, "Libro " + (i + 1), "Autor " + (i + 1));
+        }
 
-        // Insertar libros en la tabla hash
-        tabla.insertar(libro1);
-        tabla.insertar(libro2);
-        tabla.insertar(libro3);
+        // ---- Medir tiempo de inserción ----
+        long inicioInsercion = System.nanoTime();
+        for (Libro libro : libros) {
+            tabla.insertar(libro);
+        }
+        long finInsercion = System.nanoTime();
 
-        // Mostramos el estado de la tabla
-        System.out.println("Estado de la tabla hash:");
-        tabla.mostrarTabla();
+        System.out.println("Tiempo total de inserción de 20 libros: " + (finInsercion - inicioInsercion) + " ns");
 
-        // ---- Búsquedas ----
-        System.out.println("\nBuscando libro con id=6...");
-        Libro encontrado = tabla.buscarPorId(6);
+        // Mostrar parte de la tabla
+        System.out.println("\nEstado de la tabla hash (primeras 10 posiciones):");
+        for (int i = 0; i < 10; i++) {
+            tabla.mostrarPosicion(i);
+        }
+
+        // ---- Medir tiempo de búsqueda ----
+        int idBuscado = 15;
+        long inicioBusqueda = System.nanoTime();
+        Libro encontrado = tabla.buscarPorId(idBuscado);
+        long finBusqueda = System.nanoTime();
+
         if (encontrado != null) {
-            System.out.println("Encontrado: " + encontrado);
+            System.out.println("\nLibro con id=" + idBuscado + " encontrado: " + encontrado);
         } else {
-            System.out.println("No encontrado");
+            System.out.println("\nLibro con id=" + idBuscado + " no encontrado.");
         }
 
-        System.out.println("\nBuscando libro con id=11...");
-        Libro encontrado2 = tabla.buscarPorId(11);
-        if (encontrado2 != null) {
-            System.out.println("Encontrado: " + encontrado2);
-        } else {
-            System.out.println("No encontrado");
-        }
-
-        System.out.println("\nBuscando libro con id=20...");
-        Libro noExiste = tabla.buscarPorId(20);
-        if (noExiste != null) {
-            System.out.println("Encontrado: " + noExiste);
-        } else {
-            System.out.println("No encontrado");
-        }
+        System.out.println("Tiempo de búsqueda: " + (finBusqueda - inicioBusqueda) + " ns");
     }
 }
-

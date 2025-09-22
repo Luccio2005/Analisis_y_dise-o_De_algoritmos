@@ -55,5 +55,12 @@ public class TablaHash {
             }
         }
     }
+    public void mostrarPosicion(int i) {
+        if (tabla[i] != null) {
+            System.out.println("Posición " + i + ": " + tabla[i]);
+        } else {
+            System.out.println("Posición " + i + ": [vacío]");
+        }
+    }
 }
 
