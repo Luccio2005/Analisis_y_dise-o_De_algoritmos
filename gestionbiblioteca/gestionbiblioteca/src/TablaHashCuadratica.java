@@ -1,8 +1,8 @@
-public class TablaHash {
+public class TablaHashCuadratica {
     private Libro[] tabla;
     private int capacidad;
 
-    public TablaHash(int capacidad) {
+    public TablaHashCuadratica(int capacidad) {
         this.capacidad = capacidad;
         this.tabla = new Libro[capacidad];
     }
@@ -12,12 +12,13 @@ public class TablaHash {
     }
 
     public void insertar(Libro libro) {
-        int indice = funcionHash(libro.getId());
-        int intentos = 0;
+        int indiceOriginal = funcionHash(libro.getId());
+        int indice = indiceOriginal;
 
+        int intentos = 0;
         while (tabla[indice] != null && intentos < capacidad) {
             intentos++;
-            indice = (indice + 1) % capacidad; // exploración lineal
+            indice = (indiceOriginal + intentos * intentos) % capacidad; // cuadrática
         }
 
         if (intentos == capacidad) {
@@ -28,15 +29,16 @@ public class TablaHash {
     }
 
     public Libro buscarPorId(int id) {
-        int indice = funcionHash(id);
-        int intentos = 0;
+        int indiceOriginal = funcionHash(id);
+        int indice = indiceOriginal;
 
+        int intentos = 0;
         while (tabla[indice] != null && intentos < capacidad) {
             if (tabla[indice].getId() == id) {
                 return tabla[indice];
             }
             intentos++;
-            indice = (indice + 1) % capacidad;
+            indice = (indiceOriginal + intentos * intentos) % capacidad;
         }
         return null;
     }
@@ -47,4 +49,3 @@ public class TablaHash {
         }
     }
 }
-
