@@ -1,9 +1,10 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int capacidad = 5;
+        int capacidad = 50; // subimos la capacidad porque vamos a insertar 100 libros
 
         System.out.println("=== Menú de Métodos de Resolución de Colisiones ===");
         System.out.println("1. Exploración Lineal");
@@ -12,7 +13,7 @@ public class Main {
         System.out.print("Elige una opción: ");
         int opcion = sc.nextInt();
 
-        // Variables de tablas (solo una se usará según la elección)
+        // Variables de tablas
         TablaHash tablaLineal = null;
         TablaHashCuadratica tablaCuadratica = null;
         TablaHashEncadenada tablaEncadenada = null;
@@ -35,31 +36,33 @@ public class Main {
                 return;
         }
 
-        // ---- Libros de prueba ----
-        Libro libro1 = new Libro(1, "Libro 1", "Autor A");
-        Libro libro2 = new Libro(6, "Libro 2", "Autor B"); // colisión con 1
-        Libro libro3 = new Libro(11, "Libro 3", "Autor C"); // colisión con 1 y 6
+        // ---- Generar 100 libros aleatorios ----
+        Random random = new Random();
+        for (int i = 1; i <= 100; i++) {
+            int id = random.nextInt(1000); // IDs aleatorios entre 0 y 999
+            String titulo = "Libro " + id;
+            String autor = "Autor " + (char) ('A' + random.nextInt(26));
 
-        // ---- Insertar en la tabla elegida ----
-        if (tablaLineal != null) {
-            tablaLineal.insertar(libro1);
-            tablaLineal.insertar(libro2);
-            tablaLineal.insertar(libro3);
-            tablaLineal.mostrarTabla();
-        } else if (tablaCuadratica != null) {
-            tablaCuadratica.insertar(libro1);
-            tablaCuadratica.insertar(libro2);
-            tablaCuadratica.insertar(libro3);
-            tablaCuadratica.mostrarTabla();
-        } else if (tablaEncadenada != null) {
-            tablaEncadenada.insertar(libro1);
-            tablaEncadenada.insertar(libro2);
-            tablaEncadenada.insertar(libro3);
-            tablaEncadenada.mostrarTabla();
+            Libro libro = new Libro(id, titulo, autor);
+
+            if (tablaLineal != null) {
+                tablaLineal.insertar(libro);
+            } else if (tablaCuadratica != null) {
+                tablaCuadratica.insertar(libro);
+            } else if (tablaEncadenada != null) {
+                tablaEncadenada.insertar(libro);
+            }
         }
+
+        // ---- Mostrar estado final de la tabla ----
+        System.out.println("\nEstado final de la tabla con 100 libros aleatorios:");
+        if (tablaLineal != null) tablaLineal.mostrarTabla();
+        if (tablaCuadratica != null) tablaCuadratica.mostrarTabla();
+        if (tablaEncadenada != null) tablaEncadenada.mostrarTabla();
 
         sc.close();
     }
 }
+
 
 
