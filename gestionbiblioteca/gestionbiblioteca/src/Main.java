@@ -4,58 +4,74 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int capacidad = 50; // subimos la capacidad porque vamos a insertar 100 libros
 
-        System.out.println("=== Menú de Métodos de Resolución de Colisiones ===");
-        System.out.println("1. Exploración Lineal");
-        System.out.println("2. Exploración Cuadrática");
-        System.out.println("3. Direccionamiento Encadenado");
-        System.out.print("Elige una opción: ");
+        // ---- Menú de selección ----
+        System.out.println("Elige la estrategia de tabla hash:");
+        System.out.println("1. Exploración lineal");
+        System.out.println("2. Exploración cuadrática");
+        System.out.println("3. Encadenamiento separado");
         int opcion = sc.nextInt();
 
-        // Variables de tablas
+        int capacidad = 101; // número primo cercano a 100
+        Random random = new Random();
+
         TablaHash tablaLineal = null;
         TablaHashCuadratica tablaCuadratica = null;
         TablaHashEncadenada tablaEncadenada = null;
 
-        switch (opcion) {
-            case 1:
-                tablaLineal = new TablaHash(capacidad);
-                System.out.println("\nUsando EXPLORACIÓN LINEAL\n");
-                break;
-            case 2:
-                tablaCuadratica = new TablaHashCuadratica(capacidad);
-                System.out.println("\nUsando EXPLORACIÓN CUADRÁTICA\n");
-                break;
-            case 3:
-                tablaEncadenada = new TablaHashEncadenada(capacidad);
-                System.out.println("\nUsando DIRECCIONAMIENTO ENCADENADO\n");
-                break;
-            default:
-                System.out.println("Opción inválida.");
-                return;
+        // ---- Crear tabla según opción ----
+        if (opcion == 1) {
+            tablaLineal = new TablaHash(capacidad);
+        } else if (opcion == 2) {
+            tablaCuadratica = new TablaHashCuadratica(capacidad);
+        } else if (opcion == 3) {
+            tablaEncadenada = new TablaHashEncadenada(capacidad);
+        } else {
+            System.out.println("Opción inválida.");
+            return;
         }
 
-        // ---- Generar 100 libros aleatorios ----
-        Random random = new Random();
-        for (int i = 1; i <= 100; i++) {
-            int id = random.nextInt(1000); // IDs aleatorios entre 0 y 999
-            String titulo = "Libro " + id;
-            String autor = "Autor " + (char) ('A' + random.nextInt(26));
+        // ---- Insertar 100 libros aleatorios ----
+        for (int i = 0; i < 100; i++) {
+            int id = random.nextInt(1000) + 1;
+            Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
 
-            Libro libro = new Libro(id, titulo, autor);
-
-            if (tablaLineal != null) {
-                tablaLineal.insertar(libro);
-            } else if (tablaCuadratica != null) {
-                tablaCuadratica.insertar(libro);
-            } else if (tablaEncadenada != null) {
-                tablaEncadenada.insertar(libro);
-            }
+            if (tablaLineal != null) tablaLineal.insertar(libro);
+            else if (tablaCuadratica != null) tablaCuadratica.insertar(libro);
+            else if (tablaEncadenada != null) tablaEncadenada.insertar(libro);
         }
 
-        // ---- Mostrar estado final de la tabla ----
-        System.out.println("\nEstado final de la tabla con 100 libros aleatorios:");
+        // ---- Mostrar tabla inicial ----
+        System.out.println("\nTabla inicial:");
+        if (tablaLineal != null) tablaLineal.mostrarTabla();
+        if (tablaCuadratica != null) tablaCuadratica.mostrarTabla();
+        if (tablaEncadenada != null) tablaEncadenada.mostrarTabla();
+
+        // ---- Buscar libro ----
+        System.out.print("\nIngresa el ID de un libro para buscar: ");
+        int idBuscar = sc.nextInt();
+        Libro encontrado = null;
+
+        if (tablaLineal != null) encontrado = tablaLineal.buscarPorId(idBuscar);
+        else if (tablaCuadratica != null) encontrado = tablaCuadratica.buscarPorId(idBuscar);
+        else if (tablaEncadenada != null) encontrado = tablaEncadenada.buscarPorId(idBuscar);
+
+        if (encontrado != null) {
+            System.out.println("Encontrado: " + encontrado);
+        } else {
+            System.out.println("No se encontró el libro con id " + idBuscar);
+        }
+
+        // ---- Eliminar libro ----
+        System.out.print("\nIngresa el ID de un libro para eliminar: ");
+        int idEliminar = sc.nextInt();
+
+        if (tablaLineal != null) tablaLineal.eliminar(idEliminar);
+        else if (tablaCuadratica != null) tablaCuadratica.eliminar(idEliminar);
+        else if (tablaEncadenada != null) tablaEncadenada.eliminar(idEliminar);
+
+        // ---- Mostrar tabla final ----
+        System.out.println("\nTabla después de eliminación:");
         if (tablaLineal != null) tablaLineal.mostrarTabla();
         if (tablaCuadratica != null) tablaCuadratica.mostrarTabla();
         if (tablaEncadenada != null) tablaEncadenada.mostrarTabla();
@@ -63,6 +79,7 @@ public class Main {
         sc.close();
     }
 }
+
 
 
 

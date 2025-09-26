@@ -37,4 +37,15 @@ public class TablaHashEncadenada {
             System.out.println("Posición " + i + ": " + (tabla[i].isEmpty() ? "[vacío]" : tabla[i]));
         }
     }
+    public void eliminar(int id) {
+        int indice = funcionHash(id);
+        for (Libro libro : tabla[indice]) {
+            if (libro.getId() == id) {
+                System.out.println("Eliminando: " + libro);
+                tabla[indice].remove(libro);
+                return;
+            }
+        }
+        System.out.println("Libro con id " + id + " no encontrado.");
+    }
 }

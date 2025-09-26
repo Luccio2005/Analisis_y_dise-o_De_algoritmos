@@ -46,5 +46,20 @@ public class TablaHash {
             System.out.println("Posición " + i + ": " + (tabla[i] != null ? tabla[i] : "[vacío]"));
         }
     }
+    public void eliminar(int id) {
+        int indice = funcionHash(id);
+        int intentos = 0;
+
+        while (tabla[indice] != null && intentos < capacidad) {
+            if (tabla[indice].getId() == id) {
+                System.out.println("Eliminando: " + tabla[indice]);
+                tabla[indice] = null;
+                return;
+            }
+            intentos++;
+            indice = (indice + 1) % capacidad;
+        }
+        System.out.println("Libro con id " + id + " no encontrado.");
+    }
 }
 

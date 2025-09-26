@@ -48,4 +48,20 @@ public class TablaHashCuadratica {
             System.out.println("Posición " + i + ": " + (tabla[i] != null ? tabla[i] : "[vacío]"));
         }
     }
+    public void eliminar(int id) {
+        int indiceOriginal = funcionHash(id);
+        int indice = indiceOriginal;
+        int intentos = 0;
+
+        while (tabla[indice] != null && intentos < capacidad) {
+            if (tabla[indice].getId() == id) {
+                System.out.println("Eliminando: " + tabla[indice]);
+                tabla[indice] = null;
+                return;
+            }
+            intentos++;
+            indice = (indiceOriginal + intentos * intentos) % capacidad;
+        }
+        System.out.println("Libro con id " + id + " no encontrado.");
+    }
 }
