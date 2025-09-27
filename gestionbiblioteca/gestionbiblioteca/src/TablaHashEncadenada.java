@@ -3,6 +3,7 @@ import java.util.LinkedList;
 public class TablaHashEncadenada {
     private LinkedList<Libro>[] tabla;
     private int capacidad;
+    private int colisiones = 0;
 
     @SuppressWarnings("unchecked")
     public TablaHashEncadenada(int capacidad) {
@@ -19,6 +20,9 @@ public class TablaHashEncadenada {
 
     public void insertar(Libro libro) {
         int indice = funcionHash(libro.getId());
+        if (!tabla[indice].isEmpty()){
+            colisiones++;
+        }
         tabla[indice].add(libro);
     }
 
@@ -47,5 +51,8 @@ public class TablaHashEncadenada {
             }
         }
         System.out.println("Libro con id " + id + " no encontrado.");
+    }
+    public int getColisiones() {
+        return colisiones;
     }
 }

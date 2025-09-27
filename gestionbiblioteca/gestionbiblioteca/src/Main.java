@@ -40,6 +40,17 @@ public class Main {
             else if (tablaCuadratica != null) tablaCuadratica.insertar(libro);
             else if (tablaEncadenada != null) tablaEncadenada.insertar(libro);
         }
+        // ---- Comparar eficiencia ----
+        System.out.println("\n--- Comparación de eficiencia ---");
+        if (tablaLineal != null) {
+            System.out.println("Colisiones (lineal): " + tablaLineal.getColisiones());
+        }
+        if (tablaCuadratica != null) {
+            System.out.println("Colisiones (cuadrática): " + tablaCuadratica.getColisiones());
+        }
+        if (tablaEncadenada != null) {
+            System.out.println("Colisiones (encadenada): " + tablaEncadenada.getColisiones());
+        }
 
         // ---- Mostrar tabla inicial ----
         System.out.println("\nTabla inicial:");

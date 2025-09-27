@@ -1,6 +1,7 @@
 public class TablaHash {
     private Libro[] tabla;
     private int capacidad;
+    private int colisiones = 0;
 
     public TablaHash(int capacidad) {
         this.capacidad = capacidad;
@@ -16,6 +17,7 @@ public class TablaHash {
         int intentos = 0;
 
         while (tabla[indice] != null && intentos < capacidad) {
+            colisiones++;
             intentos++;
             indice = (indice + 1) % capacidad; // exploración lineal
         }
@@ -61,5 +63,9 @@ public class TablaHash {
         }
         System.out.println("Libro con id " + id + " no encontrado.");
     }
+    public int getColisiones() {
+        return colisiones;
+    }
+
 }
 
