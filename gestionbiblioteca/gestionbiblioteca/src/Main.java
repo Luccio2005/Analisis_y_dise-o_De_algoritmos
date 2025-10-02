@@ -5,91 +5,96 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // ---- Menú de selección ----
-        System.out.println("Elige la estrategia de tabla hash:");
-        System.out.println("1. Exploración lineal");
-        System.out.println("2. Exploración cuadrática");
-        System.out.println("3. Encadenamiento separado");
-        int opcion = sc.nextInt();
-
         int capacidad = 101; // número primo cercano a 100
         Random random = new Random();
 
-        TablaHash tablaLineal = null;
-        TablaHashCuadratica tablaCuadratica = null;
-        TablaHashEncadenada tablaEncadenada = null;
+        // Crear las 3 tablas
+        TablaHash tablaLineal = new TablaHash(capacidad);
+        TablaHashCuadratica tablaCuadratica = new TablaHashCuadratica(capacidad);
+        TablaHashEncadenada tablaEncadenada = new TablaHashEncadenada(capacidad);
 
-        // ---- Crear tabla según opción ----
-        if (opcion == 1) {
-            tablaLineal = new TablaHash(capacidad);
-        } else if (opcion == 2) {
-            tablaCuadratica = new TablaHashCuadratica(capacidad);
-        } else if (opcion == 3) {
-            tablaEncadenada = new TablaHashEncadenada(capacidad);
-        } else {
-            System.out.println("Opción inválida.");
-            return;
-        }
-
-        // ---- Insertar 100 libros aleatorios ----
+        // ---- Insertar 100 libros aleatorios en cada tabla y medir tiempos ----
+        long inicioLineal = System.nanoTime();
         for (int i = 0; i < 100; i++) {
             int id = random.nextInt(1000) + 1;
             Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
-
-            if (tablaLineal != null) tablaLineal.insertar(libro);
-            else if (tablaCuadratica != null) tablaCuadratica.insertar(libro);
-            else if (tablaEncadenada != null) tablaEncadenada.insertar(libro);
+            tablaLineal.insertar(libro);
         }
+        long finLineal = System.nanoTime();
+
+        long inicioCuadratica = System.nanoTime();
+        for (int i = 0; i < 100; i++) {
+            int id = random.nextInt(1000) + 1;
+            Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
+            tablaCuadratica.insertar(libro);
+        }
+        long finCuadratica = System.nanoTime();
+
+        long inicioEncadenada = System.nanoTime();
+        for (int i = 0; i < 100; i++) {
+            int id = random.nextInt(1000) + 1;
+            Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
+            tablaEncadenada.insertar(libro);
+        }
+        long finEncadenada = System.nanoTime();
+
         // ---- Comparar eficiencia ----
         System.out.println("\n--- Comparación de eficiencia ---");
-        if (tablaLineal != null) {
-            System.out.println("Colisiones (lineal): " + tablaLineal.getColisiones());
-        }
-        if (tablaCuadratica != null) {
-            System.out.println("Colisiones (cuadrática): " + tablaCuadratica.getColisiones());
-        }
-        if (tablaEncadenada != null) {
-            System.out.println("Colisiones (encadenada): " + tablaEncadenada.getColisiones());
-        }
+        System.out.println("Colisiones (lineal): " + tablaLineal.getColisiones());
+        System.out.println("Tiempo (lineal): " + (finLineal - inicioLineal) / 1_000_000.0 + " ms");
 
-        // ---- Mostrar tabla inicial ----
-        System.out.println("\nTabla inicial:");
-        if (tablaLineal != null) tablaLineal.mostrarTabla();
-        if (tablaCuadratica != null) tablaCuadratica.mostrarTabla();
-        if (tablaEncadenada != null) tablaEncadenada.mostrarTabla();
+        System.out.println("Colisiones (cuadrática): " + tablaCuadratica.getColisiones());
+        System.out.println("Tiempo (cuadrática): " + (finCuadratica - inicioCuadratica) / 1_000_000.0 + " ms");
+
+        System.out.println("Colisiones (encadenada): " + tablaEncadenada.getColisiones());
+        System.out.println("Tiempo (encadenada): " + (finEncadenada - inicioEncadenada) / 1_000_000.0 + " ms");
+
+        // ---- Mostrar tablas ----
+        System.out.println("\nTabla Lineal:");
+        tablaLineal.mostrarTabla();
+
+        System.out.println("\nTabla Cuadrática:");
+        tablaCuadratica.mostrarTabla();
+
+        System.out.println("\nTabla Encadenada:");
+        tablaEncadenada.mostrarTabla();
 
         // ---- Buscar libro ----
         System.out.print("\nIngresa el ID de un libro para buscar: ");
         int idBuscar = sc.nextInt();
-        Libro encontrado = null;
 
-        if (tablaLineal != null) encontrado = tablaLineal.buscarPorId(idBuscar);
-        else if (tablaCuadratica != null) encontrado = tablaCuadratica.buscarPorId(idBuscar);
-        else if (tablaEncadenada != null) encontrado = tablaEncadenada.buscarPorId(idBuscar);
+        Libro encontradoLineal = tablaLineal.buscarPorId(idBuscar);
+        Libro encontradoCuadratica = tablaCuadratica.buscarPorId(idBuscar);
+        Libro encontradoEncadenada = tablaEncadenada.buscarPorId(idBuscar);
 
-        if (encontrado != null) {
-            System.out.println("Encontrado: " + encontrado);
-        } else {
-            System.out.println("No se encontró el libro con id " + idBuscar);
-        }
+        System.out.println("\nResultado búsqueda:");
+        System.out.println("Lineal -> " + (encontradoLineal != null ? encontradoLineal : "No encontrado"));
+        System.out.println("Cuadrática -> " + (encontradoCuadratica != null ? encontradoCuadratica : "No encontrado"));
+        System.out.println("Encadenada -> " + (encontradoEncadenada != null ? encontradoEncadenada : "No encontrado"));
 
         // ---- Eliminar libro ----
         System.out.print("\nIngresa el ID de un libro para eliminar: ");
         int idEliminar = sc.nextInt();
 
-        if (tablaLineal != null) tablaLineal.eliminar(idEliminar);
-        else if (tablaCuadratica != null) tablaCuadratica.eliminar(idEliminar);
-        else if (tablaEncadenada != null) tablaEncadenada.eliminar(idEliminar);
+        tablaLineal.eliminar(idEliminar);
+        tablaCuadratica.eliminar(idEliminar);
+        tablaEncadenada.eliminar(idEliminar);
 
-        // ---- Mostrar tabla final ----
-        System.out.println("\nTabla después de eliminación:");
-        if (tablaLineal != null) tablaLineal.mostrarTabla();
-        if (tablaCuadratica != null) tablaCuadratica.mostrarTabla();
-        if (tablaEncadenada != null) tablaEncadenada.mostrarTabla();
+        // ---- Mostrar tablas después de eliminar ----
+        System.out.println("\nTabla Lineal después de eliminar:");
+        tablaLineal.mostrarTabla();
+
+        System.out.println("\nTabla Cuadrática después de eliminar:");
+        tablaCuadratica.mostrarTabla();
+
+        System.out.println("\nTabla Encadenada después de eliminar:");
+        tablaEncadenada.mostrarTabla();
 
         sc.close();
     }
 }
+
+
 
 
 
