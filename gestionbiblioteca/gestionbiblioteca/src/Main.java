@@ -13,41 +13,66 @@ public class Main {
         TablaHashCuadratica tablaCuadratica = new TablaHashCuadratica(capacidad);
         TablaHashEncadenada tablaEncadenada = new TablaHashEncadenada(capacidad);
 
-        // ---- Insertar 100 libros aleatorios en cada tabla y medir tiempos ----
+        Runtime runtime = Runtime.getRuntime(); // para medir memoria
+
+        // ---- Insertar 100 libros en la tabla Lineal ----
+        runtime.gc();
+        long memoriaAntesLineal = runtime.totalMemory() - runtime.freeMemory();
         long inicioLineal = System.nanoTime();
+
         for (int i = 0; i < 100; i++) {
             int id = random.nextInt(1000) + 1;
             Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
             tablaLineal.insertar(libro);
         }
-        long finLineal = System.nanoTime();
 
+        long finLineal = System.nanoTime();
+        long memoriaDespuesLineal = runtime.totalMemory() - runtime.freeMemory();
+        long memoriaUsadaLineal = memoriaDespuesLineal - memoriaAntesLineal;
+
+        // ---- Insertar 100 libros en la tabla Cuadrática ----
+        runtime.gc();
+        long memoriaAntesCuadratica = runtime.totalMemory() - runtime.freeMemory();
         long inicioCuadratica = System.nanoTime();
+
         for (int i = 0; i < 100; i++) {
             int id = random.nextInt(1000) + 1;
             Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
             tablaCuadratica.insertar(libro);
         }
-        long finCuadratica = System.nanoTime();
 
+        long finCuadratica = System.nanoTime();
+        long memoriaDespuesCuadratica = runtime.totalMemory() - runtime.freeMemory();
+        long memoriaUsadaCuadratica = memoriaDespuesCuadratica - memoriaAntesCuadratica;
+
+        // ---- Insertar 100 libros en la tabla Encadenada ----
+        runtime.gc();
+        long memoriaAntesEncadenada = runtime.totalMemory() - runtime.freeMemory();
         long inicioEncadenada = System.nanoTime();
+
         for (int i = 0; i < 100; i++) {
             int id = random.nextInt(1000) + 1;
             Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
             tablaEncadenada.insertar(libro);
         }
+
         long finEncadenada = System.nanoTime();
+        long memoriaDespuesEncadenada = runtime.totalMemory() - runtime.freeMemory();
+        long memoriaUsadaEncadenada = memoriaDespuesEncadenada - memoriaAntesEncadenada;
 
         // ---- Comparar eficiencia ----
         System.out.println("\n--- Comparación de eficiencia ---");
-        System.out.println("Colisiones (lineal): " + tablaLineal.getColisiones());
-        System.out.println("Tiempo (lineal): " + (finLineal - inicioLineal) / 1_000_000.0 + " ms");
+        System.out.println("Lineal -> Colisiones: " + tablaLineal.getColisiones() +
+                " | Tiempo: " + (finLineal - inicioLineal) / 1_000_000.0 + " ms" +
+                " | Memoria: " + memoriaUsadaLineal / 1024.0 + " KB");
 
-        System.out.println("Colisiones (cuadrática): " + tablaCuadratica.getColisiones());
-        System.out.println("Tiempo (cuadrática): " + (finCuadratica - inicioCuadratica) / 1_000_000.0 + " ms");
+        System.out.println("Cuadrática -> Colisiones: " + tablaCuadratica.getColisiones() +
+                " | Tiempo: " + (finCuadratica - inicioCuadratica) / 1_000_000.0 + " ms" +
+                " | Memoria: " + memoriaUsadaCuadratica / 1024.0 + " KB");
 
-        System.out.println("Colisiones (encadenada): " + tablaEncadenada.getColisiones());
-        System.out.println("Tiempo (encadenada): " + (finEncadenada - inicioEncadenada) / 1_000_000.0 + " ms");
+        System.out.println("Encadenada -> Colisiones: " + tablaEncadenada.getColisiones() +
+                " | Tiempo: " + (finEncadenada - inicioEncadenada) / 1_000_000.0 + " ms" +
+                " | Memoria: " + memoriaUsadaEncadenada / 1024.0 + " KB");
 
         // ---- Mostrar tablas ----
         System.out.println("\nTabla Lineal:");
@@ -93,6 +118,7 @@ public class Main {
         sc.close();
     }
 }
+
 
 
 
