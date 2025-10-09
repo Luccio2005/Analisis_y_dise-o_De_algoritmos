@@ -50,7 +50,7 @@ public class Main {
         long memoriaAntesEncadenada = runtime.totalMemory() - runtime.freeMemory();
         long inicioEncadenada = System.nanoTime();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             int id = random.nextInt(1000) + 1;
             Libro libro = new Libro(id, "Libro" + id, "Autor" + id);
             tablaEncadenada.insertar(libro);

@@ -18,7 +18,7 @@ public class GenerarLibros {
             File archivo = new File(rutaArchivo);
 
             try (FileWriter writer = new FileWriter(archivo)) {
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 1000; i++) {
                     int id = random.nextInt(1000) + 1;
                     String titulo = "Libro" + id;
                     String autor = "Autor" + id;
