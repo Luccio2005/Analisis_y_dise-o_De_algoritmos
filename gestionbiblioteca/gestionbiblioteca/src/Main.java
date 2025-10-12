@@ -115,6 +115,16 @@ public class Main {
         System.out.println("\nTabla Encadenada después de eliminar:");
         tablaEncadenada.mostrarTabla();
 
+
+        System.out.println("\n--- Hash directo en archivo ---");
+
+        Libro libroArchivo = new Libro(123, "Libro123", "Autor123");
+        HashArchivo.escribirLibro(libroArchivo);
+
+        System.out.println("\nBuscando libro por ID 123:");
+        HashArchivo.buscarLibro(123);
+
+
         sc.close();
     }
 }
