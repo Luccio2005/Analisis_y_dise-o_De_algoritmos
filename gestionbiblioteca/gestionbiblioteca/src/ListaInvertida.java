@@ -8,6 +8,7 @@ public class ListaInvertida {
         String rutaIndiceInvertido = System.getProperty("user.home") + "/Desktop/indice_invertido.txt";
 
         Map<String, List<Integer>> indiceInvertido = new HashMap<>();
+        Map<String, List<Integer>> indiceAutores = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
@@ -17,30 +18,68 @@ public class ListaInvertida {
                 String titulo = partes[1];
                 String autor = partes[2];
 
-                // 🔹 Dividir palabras clave (por título y autor)
+                // 🔹 Palabras clave del título
                 agregarPalabras(indiceInvertido, titulo, id);
-                agregarPalabras(indiceInvertido, autor, id);
+
+                // 🔹 Guardar autores completos (para búsqueda por nombre)
+                String autorClave = autor.toLowerCase();
+                indiceAutores.computeIfAbsent(autorClave, k -> new ArrayList<>()).add(id);
             }
 
-            // 🔹 Guardar el índice invertido en un archivo
+            // 🔹 Guardar los índices en archivos
             try (FileWriter fw = new FileWriter(rutaIndiceInvertido)) {
+                fw.write("=== ÍNDICE POR PALABRAS CLAVE ===\n");
                 for (Map.Entry<String, List<Integer>> entrada : indiceInvertido.entrySet()) {
+                    fw.write(entrada.getKey() + " -> " + entrada.getValue() + "\n");
+                }
+
+                fw.write("\n=== ÍNDICE POR AUTORES ===\n");
+                for (Map.Entry<String, List<Integer>> entrada : indiceAutores.entrySet()) {
                     fw.write(entrada.getKey() + " -> " + entrada.getValue() + "\n");
                 }
             }
 
-            System.out.println("✅ Índice invertido generado correctamente en:");
+            System.out.println("✅ Índices generados correctamente en:");
             System.out.println(rutaIndiceInvertido);
 
-            // 🔹 Permitir búsqueda de palabra clave
+            // 🔹 Menú de búsqueda
             Scanner sc = new Scanner(System.in);
-            System.out.print("\n🔍 Ingresa una palabra clave para buscar libros: ");
-            String palabra = sc.nextLine().toLowerCase();
+            System.out.println("\n🔍 Tipo de búsqueda:");
+            System.out.println("1) Por palabra clave (título)");
+            System.out.println("2) Por autor");
+            System.out.print("Elige una opción: ");
+            int opcion = sc.nextInt();
+            sc.nextLine(); // limpiar buffer
 
-            if (indiceInvertido.containsKey(palabra)) {
-                System.out.println("\n📚 Libros con la palabra '" + palabra + "': " + indiceInvertido.get(palabra));
+            if (opcion == 1) {
+                System.out.print("👉 Ingresa una palabra clave: ");
+                String palabra = sc.nextLine().toLowerCase();
+
+                if (indiceInvertido.containsKey(palabra)) {
+                    System.out.println("\n📚 Libros con la palabra '" + palabra + "': " + indiceInvertido.get(palabra));
+                } else {
+                    System.out.println("\n❌ No se encontraron libros con esa palabra clave.");
+                }
+
+            } else if (opcion == 2) {
+                System.out.print("👉 Ingresa el nombre o parte del autor: ");
+                String autorBuscado = sc.nextLine().toLowerCase();
+
+                boolean encontrado = false;
+                for (Map.Entry<String, List<Integer>> entrada : indiceAutores.entrySet()) {
+                    if (entrada.getKey().contains(autorBuscado)) {
+                        System.out.println("\n👤 Autor: " + entrada.getKey());
+                        System.out.println("📚 Libros: " + entrada.getValue());
+                        encontrado = true;
+                    }
+                }
+
+                if (!encontrado) {
+                    System.out.println("\n❌ No se encontraron autores que coincidan con '" + autorBuscado + "'");
+                }
+
             } else {
-                System.out.println("\n❌ No se encontraron libros con esa palabra clave.");
+                System.out.println("❌ Opción no válida.");
             }
 
             sc.close();
@@ -51,7 +90,6 @@ public class ListaInvertida {
     }
 
     private static void agregarPalabras(Map<String, List<Integer>> indice, String texto, int idLibro) {
-        // Divide el texto en palabras eliminando caracteres especiales
         String[] palabras = texto.toLowerCase().split("[^a-zA-Z0-9áéíóúñ]+");
         for (String palabra : palabras) {
             if (!palabra.isEmpty()) {
@@ -60,3 +98,4 @@ public class ListaInvertida {
         }
     }
 }
+
