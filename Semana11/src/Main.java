@@ -36,5 +36,28 @@ public class Main {
         for (Libro l : libros) {
             System.out.println(l);
         }
+        // Ordenar por ID con Quick Sort
+        System.out.println("\n⚡ Ordenando por ID con Quick Sort...");
+        inicio = System.nanoTime();
+        QuickSort.ordenarPorId(libros, 0, libros.length - 1);
+        fin = System.nanoTime();
+        System.out.println("⏱️ Tiempo de ejecución: " + (fin - inicio) + " ns");
+
+        System.out.println("\n📚 Lista ordenada por ID (Quick Sort):");
+        for (Libro l : libros) {
+            System.out.println(l);
+        }
+
+        // Ordenar por Título con Quick Sort
+        System.out.println("\n⚡ Ordenando por Título con Quick Sort...");
+        inicio = System.nanoTime();
+        QuickSort.ordenarPorTitulo(libros, 0, libros.length - 1);
+        fin = System.nanoTime();
+        System.out.println("⏱️ Tiempo de ejecución: " + (fin - inicio) + " ns");
+
+        System.out.println("\n📚 Lista ordenada por Título (Quick Sort):");
+        for (Libro l : libros) {
+            System.out.println(l);
+        }
     }
 }
