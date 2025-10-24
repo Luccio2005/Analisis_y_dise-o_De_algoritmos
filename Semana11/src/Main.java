@@ -90,6 +90,46 @@ public class Main {
         for (int i = 0; i < 10; i++) {
             System.out.println(milLibros2[i]);
         }
+
+        // Repetimos 3 veces para obtener un promedio más fiable
+        long[] tiemposShell = new long[3];
+        long[] tiemposQuick = new long[3];
+
+        for (int rep = 0; rep < 3; rep++) {
+            Libro[] arrayShell = generarLibrosAleatorios(2000);
+            Libro[] arrayQuick = arrayShell.clone();
+
+            // Shell Sort
+            inicio = System.nanoTime();
+            ShellSort.ordenarPorTitulo(arrayShell);
+            fin = System.nanoTime();
+            tiemposShell[rep] = fin - inicio;
+
+            // Quick Sort
+            inicio = System.nanoTime();
+            QuickSort.ordenarPorTitulo(arrayQuick, 0, arrayQuick.length - 1);
+            fin = System.nanoTime();
+            tiemposQuick[rep] = fin - inicio;
+        }
+
+// Calcular promedios
+        long promedioShell = (tiemposShell[0] + tiemposShell[1] + tiemposShell[2]) / 3;
+        long promedioQuick = (tiemposQuick[0] + tiemposQuick[1] + tiemposQuick[2]) / 3;
+
+// Mostrar tabla en consola
+        System.out.println("\n\n📊 Comparación de tiempos (2000 libros)");
+        System.out.println("┌───────────────┬────────────────────────┐");
+        System.out.println("│ Algoritmo     │ Tiempo promedio (ns)   │");
+        System.out.println("├───────────────┼────────────────────────┤");
+        System.out.println("│ Shell Sort    │ " + promedioShell + " │");
+        System.out.println("│ Quick Sort    │ " + promedioQuick + " │");
+        System.out.println("└───────────────┴────────────────────────┘");
+
+        if (promedioShell > promedioQuick) {
+            System.out.println("\n✅ Quick Sort fue más rápido ");
+        } else {
+            System.out.println("\n✅ Shell Sort fue más rápido ");
+        }
     }
 
     // ==============================
