@@ -41,6 +41,21 @@ public class Main {
         System.out.println("\nBuscando libro con Título = 'Clean Code' (binaria)");
         Libro encontradoBinariaTitulo = BusquedaBinaria.buscarPorTitulo(libros, "Clean Code");
         System.out.println(encontradoBinariaTitulo != null ? encontradoBinariaTitulo : "Libro no encontrado");
+        // =====================================
+        //  BÚSQUEDA BINARIA RECURSIVA
+        // =====================================
+        System.out.println("\n=============================");
+        System.out.println("BÚSQUEDA BINARIA RECURSIVA");
+        System.out.println("=============================");
+
+        System.out.println("\nBuscando libro con ID = 2 (binaria recursiva)");
+        Libro resultadoRecursivoId = BusquedaBinariaRecursiva.buscarPorId(libros, 2, 0, libros.length - 1);
+        System.out.println(resultadoRecursivoId != null ? resultadoRecursivoId : "Libro no encontrado");
+
+        System.out.println("\nBuscando libro con Título = 'La Odisea' (binaria recursiva)");
+        Libro resultadoRecursivoTitulo = BusquedaBinariaRecursiva.buscarPorTitulo(libros, "La Odisea", 0, libros.length - 1);
+        System.out.println(resultadoRecursivoTitulo != null ? resultadoRecursivoTitulo : "Libro no encontrado");
+
     }
 }
 
