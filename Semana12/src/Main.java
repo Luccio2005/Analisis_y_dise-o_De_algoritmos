@@ -1,61 +1,41 @@
 public class Main {
     public static void main(String[] args) {
 
-        // =====================================
-        // BÚSQUEDA LINEAL
-        // =====================================
-        Libro[] libros = {
-                new Libro(1, "Clean Code", "Robert C. Martin"),
-                new Libro(2, "El Quijote", "Cervantes"),
-                new Libro(3, "Cien años de soledad", "García Márquez"),
-                new Libro(4, "La Odisea", "Homero"),
-                new Libro(5, "1984", "George Orwell")
-        };
+        // ================================
+        // 🔹 Generar 10,000 libros
+        // ================================
+        Libro[] libros = GeneradorLibros.generarLibros(10_000);
+        System.out.println("Se generaron " + libros.length + " libros.\n");
 
-        System.out.println("=============================");
-        System.out.println("BÚSQUEDA LINEAL");
-        System.out.println("=============================");
+        int idBuscado = 9876; // valor aleatorio dentro del rango
+        String tituloBuscado = "Libro 9876";
 
-        System.out.println("Buscando libro con ID = 3 (lineal)");
-        Libro resultado1 = BusquedaLineal.buscarPorId(libros, 3);
-        System.out.println(resultado1 != null ? resultado1 : "Libro no encontrado");
+        // ================================
+        // 🔹 Búsqueda lineal
+        // ================================
+        long inicio = System.nanoTime();
+        Libro resultado1 = BusquedaLineal.buscarPorId(libros, idBuscado);
+        long fin = System.nanoTime();
+        System.out.println("🔍 Búsqueda lineal por ID tomó: " + (fin - inicio) + " ns");
 
-        System.out.println("\nBuscando libro con Título = '1984' (lineal)");
-        Libro resultado2 = BusquedaLineal.buscarPorTitulo(libros, "1984");
-        System.out.println(resultado2 != null ? resultado2 : "Libro no encontrado");
+        // ================================
+        // 🔹 Búsqueda binaria iterativa
+        // ================================
+        inicio = System.nanoTime();
+        Libro resultado2 = BusquedaBinaria.buscarPorId(libros, idBuscado);
+        fin = System.nanoTime();
+        System.out.println("⚙️  Búsqueda binaria iterativa tomó: " + (fin - inicio) + " ns");
 
-        // =====================================
-        //  BÚSQUEDA BINARIA ITERATIVA
-        // =====================================
-        System.out.println("\n=============================");
-        System.out.println("BÚSQUEDA BINARIA ITERATIVA");
-        System.out.println("=============================");
+        // ================================
+        // 🔹 Búsqueda binaria recursiva
+        // ================================
+        inicio = System.nanoTime();
+        Libro resultado3 = BusquedaBinariaRecursiva.buscarPorId(libros, idBuscado, 0, libros.length - 1);
+        fin = System.nanoTime();
+        System.out.println("🧠 Búsqueda binaria recursiva tomó: " + (fin - inicio) + " ns");
 
-        // La búsqueda binaria requiere que el arreglo esté ordenado.
-        // Este arreglo ya está ordenado por ID, así que no necesitamos ordenar.
-
-        System.out.println("\nBuscando libro con ID = 4 (binaria)");
-        Libro encontradoBinariaId = BusquedaBinaria.buscarPorId(libros, 4);
-        System.out.println(encontradoBinariaId != null ? encontradoBinariaId : "Libro no encontrado");
-
-        System.out.println("\nBuscando libro con Título = 'Clean Code' (binaria)");
-        Libro encontradoBinariaTitulo = BusquedaBinaria.buscarPorTitulo(libros, "Clean Code");
-        System.out.println(encontradoBinariaTitulo != null ? encontradoBinariaTitulo : "Libro no encontrado");
-        // =====================================
-        //  BÚSQUEDA BINARIA RECURSIVA
-        // =====================================
-        System.out.println("\n=============================");
-        System.out.println("BÚSQUEDA BINARIA RECURSIVA");
-        System.out.println("=============================");
-
-        System.out.println("\nBuscando libro con ID = 2 (binaria recursiva)");
-        Libro resultadoRecursivoId = BusquedaBinariaRecursiva.buscarPorId(libros, 2, 0, libros.length - 1);
-        System.out.println(resultadoRecursivoId != null ? resultadoRecursivoId : "Libro no encontrado");
-
-        System.out.println("\nBuscando libro con Título = 'La Odisea' (binaria recursiva)");
-        Libro resultadoRecursivoTitulo = BusquedaBinariaRecursiva.buscarPorTitulo(libros, "La Odisea", 0, libros.length - 1);
-        System.out.println(resultadoRecursivoTitulo != null ? resultadoRecursivoTitulo : "Libro no encontrado");
-
+        System.out.println("\nResultado encontrado: " + resultado3);
     }
 }
+
 
