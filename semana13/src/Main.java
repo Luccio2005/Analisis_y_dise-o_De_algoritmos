@@ -24,7 +24,7 @@ public class Main {
                     PilaDeLlamadas.ejecutar();
                     break;
                 case 3:
-                    System.out.println("Recursividad indirecta aún no implementada.");
+                    RecursividadIndirecta.ejecutar();
                     break;
                 case 4:
                     System.out.println("Backtracking aún no implementado.");
