@@ -27,7 +27,7 @@ public class Main {
                     RecursividadIndirecta.ejecutar();
                     break;
                 case 4:
-                    System.out.println("Backtracking aún no implementado.");
+                    LaberintoBacktracking.ejecutar();
                     break;
                 case 5:
                     System.out.println("Comparación aún no implementada.");
