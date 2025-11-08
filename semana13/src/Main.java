@@ -30,7 +30,7 @@ public class Main {
                     LaberintoBacktracking.ejecutar();
                     break;
                 case 5:
-                    System.out.println("Comparación aún no implementada.");
+                    RecursionVsIteracion.ejecutar();
                     break;
                 case 6:
                     System.out.println(" Saliendo del programa...");
