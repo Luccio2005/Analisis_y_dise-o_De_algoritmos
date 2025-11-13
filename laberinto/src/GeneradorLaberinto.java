@@ -14,6 +14,7 @@ public class GeneradorLaberinto {
         this.laberinto = new char[FILAS][COLUMNAS];
         inicializarLaberinto();
         generarLaberinto(1, 1);
+        colocarInicioYSalida();
         laberinto[1][1] = 'S'; // inicio
         laberinto[FILAS - 2][COLUMNAS - 2] = 'E'; // salida
     }
@@ -63,11 +64,38 @@ public class GeneradorLaberinto {
             dirs[j] = temp;
         }
     }
+    private void colocarInicioYSalida() {
+        laberinto[1][1] = 'S';
+        // Buscar una celda libre cercana al borde derecho
+        for (int i = FILAS - 2; i > 1; i--) {
+            if (laberinto[i][COLUMNAS - 3] == ' ') {
+                laberinto[i][COLUMNAS - 2] = 'E';
+                return;
+            }
+        }
+        // Si no encuentra, coloca salida de emergencia abajo
+        laberinto[FILAS - 2][COLUMNAS - 2] = 'E';
+    }
+
 
     public void imprimirLaberinto() {
         for (int i = 0; i < FILAS; i++) {
             for (int j = 0; j < COLUMNAS; j++) {
-                System.out.print(laberinto[i][j]);
+                char c = laberinto[i][j];
+                switch (c) {
+                    case '#':
+                        System.out.print("🧱"); // muro
+                        break;
+                    case 'S':
+                        System.out.print("🟢"); // inicio
+                        break;
+                    case 'E':
+                        System.out.print("🏁"); // salida
+                        break;
+                    default:
+                        System.out.print("  "); // camino
+                        break;
+                }
             }
             System.out.println();
         }
