@@ -14,5 +14,14 @@ public class Main {
         ventana.pack();
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
+        // obtener posición inicial
+        int startX = 1;
+        int startY = 1;
+
+        Explorador exp = new Explorador(startX, startY, mapa.getGrid(), panel);
+        panel.setExplorador(exp);
+
+        // iniciar búsqueda en hilo aparte
+        new Thread(() -> exp.iniciarBusqueda()).start();
     }
 }
